@@ -2,7 +2,7 @@
 A simple directory listing script
 
 ## Usage
-Download the repositoy, unzip it and move the `index.php` in the web server's root folder.
+Download the repository, unzip it and move the `index.php` in the web server's root folder.
 
 ```
 $ wget https://github.com/saman/listor/archive/master.zip
