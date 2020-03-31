@@ -2,20 +2,20 @@
 
 /**
  * Listor
- * A simple directory listing script
+ * A simple directory lister script
  * @author Saman Soltani <me@samansoltani.com>
  */
 
-$cur_dir = $_GET['dir'] ?: '';
-$dir = __DIR__ . "/" . $cur_dir;
-$list = scandir($dir);
-$block_list = ['.', '..'];
 
+$block_list = ['.', '..', '.DS_Store'];
+
+$cur_dir = $_GET['dir'] ?: '';
+$dir = __DIR__ . '/' . $cur_dir;
+$list = scandir($dir);
 $dirs = [];
 $files = [];
 
 foreach ($list as $value) {
-    // echo $dir . $value . PHP_EOL;
     if ($dir . $value !== __FILE__ && !in_array($value, $block_list)) {
         if (is_dir($dir . $value)) {
             $dirs[] = $value;
@@ -33,7 +33,7 @@ foreach ($list as $value) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Listor - <?= $cur_dir ?></title>
     <style>
         html,
         body {
