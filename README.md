@@ -6,7 +6,7 @@ Download the repository, unzip it and move the `index.php` in the web server's r
 
 ```
 $ wget https://github.com/saman/listor/archive/master.zip
-$ unzip listor-master.zip
+$ unzip master.zip
 $ mv listor-master/index.php /var/www/html
 ```
 ## Demo
