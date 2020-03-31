@@ -11,14 +11,14 @@ $block_list = ['.', '..', '.DS_Store'];
 
 $current_path = $_GET['p'] ?: '';
 $current_path_arr = explode('/', $current_path);
-$path = __DIR__ . '/' . $current_path . '/';
+$path = __DIR__ . '/' . $current_path;
 $list = scandir($path);
 $dirs = [];
 $files = [];
 
 foreach ($list as $value) {
     if ($path . $value !== __FILE__ && !in_array($value, $block_list)) {
-        if (is_dir($path . $value)) {
+        if (is_dir($path . '/' . $value)) {
             $dirs[] = $value;
         } else {
             $files[] = $value;
