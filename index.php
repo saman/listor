@@ -19,13 +19,30 @@ $files = [];
 foreach ($list as $value) {
     if ($path . $value !== __FILE__ && !in_array($value, $block_list)) {
         if (is_dir($path . '/' . $value)) {
-            $dirs[] = $value;
+            $dirs[] = [
+                'name' => $value,
+                'type' => 'dir',
+                'link' => '?p=' . rawurlencode(strlen($current_path) ? $current_path . '/' . $value : $value)
+            ];
         } else {
-            $files[] = $value;
+            $files[] = [
+                'name' => $value,
+                'size' => filesize($path . '/' . $value),
+                'type' => 'file',
+                'link' => rawurlencode($current_path) . '/' . rawurlencode($value)
+            ];
         }
     }
 }
 
+$list = array_merge($dirs, $files);
+
+function human_filesize($bytes, $decimals = 2)
+{
+    $sz = 'BKMGTP';
+    $factor = floor((strlen($bytes) - 1) / 3);
+    return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ' ' . @$sz[$factor];
+}
 ?>
 
 <!DOCTYPE html>
@@ -46,13 +63,51 @@ foreach ($list as $value) {
         }
 
         .main {
-            width: 50%;
+            width: 960px;
             margin: 50px auto 0 auto;
-            padding: 10px;
+        }
+
+        .row {
+            margin: 2px 0;
+            padding: 5px;
+        }
+
+        .row:hover {
+            background: #f9f9f9;
+        }
+
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .col1 {
+            width: 8.33%;
+            float: left;
+        }
+
+        .col11 {
+            width: 91.66%;
+            float: left;
+        }
+
+        .col10 {
+            width: 83.33%;
+            float: left;
         }
 
         .list {
             border: 1px solid #eee;
+            padding: 10px;
+        }
+
+        .list> :first-child {
+            margin-top: 0 !important;
+        }
+
+        .list> :last-child {
+            margin-bottom: 0 !important;
         }
 
         .breadcrumb {
@@ -92,7 +147,7 @@ foreach ($list as $value) {
             margin: 10px 5px;
         }
 
-        .folder {
+        .dir {
             height: 15px;
             width: 15px;
             background: url('data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgZm9jdXNhYmxlPSJmYWxzZSIgZGF0YS1wcmVmaXg9ImZhcyIgZGF0YS1pY29uPSJmb2xkZXIiIGNsYXNzPSJzdmctaW5saW5lLS1mYSBmYS1mb2xkZXIgZmEtdy0xNiIgcm9sZT0iaW1nIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik00NjQgMTI4SDI3MmwtNjQtNjRINDhDMjEuNDkgNjQgMCA4NS40OSAwIDExMnYyODhjMCAyNi41MSAyMS40OSA0OCA0OCA0OGg0MTZjMjYuNTEgMCA0OC0yMS40OSA0OC00OFYxNzZjMC0yNi41MS0yMS40OS00OC00OC00OHoiPjwvcGF0aD48L3N2Zz4=');
@@ -129,25 +184,21 @@ foreach ($list as $value) {
             <div class="clear"></div>
         </div>
         <div class="list">
-            <ul>
-                <?php foreach ($dirs as $dir) { ?>
-                    <li>
-                        <a href="./?p=<?= rawurlencode(strlen($current_path) ? $current_path . '/' . $dir : $dir) ?>">
-                            <div class="folder"></div>
-                            <?= $dir ?>
-                        </a>
-                    </li>
-                <?php } ?>
 
-                <?php foreach ($files as $file) { ?>
-                    <li>
-                        <a href="./<?= rawurlencode($current_path) . '/' . rawurlencode($file) ?>">
-                            <div class="file"></div>
-                            <?= $file ?>
+            <?php foreach ($list as $item) { ?>
+                <div class="row">
+                    <div class="col11">
+                        <a href="./<?= $item['link'] ?>">
+                            <div class="<?= $item['type'] ?>"></div>
+                            <?= $item['name'] ?>
                         </a>
-                    </li>
-                <?php } ?>
-            </ul>
+                    </div>
+                    <div class="col1">
+                        <?= isset($item['size']) ? human_filesize($item['size']) : ''  ?>
+                    </div>
+                </div>
+            <?php } ?>
+
         </div>
     </div>
 </body>
