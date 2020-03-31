@@ -125,7 +125,7 @@ foreach ($list as $value) {
             ?>
                 <span>/</span>
                 <a href="./?p=<?= rawurlencode(rtrim($path_till_now, '/')) ?>"><?= $value ?></a>
-            <? } ?>
+            <?php } ?>
             <div class="clear"></div>
         </div>
         <div class="list">
