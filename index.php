@@ -33,7 +33,7 @@ foreach ($list as $value) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listor - <?= $cur_dir ?></title>
+    <title>Listor<?= strlen($cur_dir) ? ' - ' . $cur_dir : '' ?></title>
     <style>
         html,
         body {
