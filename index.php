@@ -9,15 +9,16 @@
 
 $block_list = ['.', '..', '.DS_Store'];
 
-$cur_dir = $_GET['dir'] ?: '';
-$dir = __DIR__ . '/' . $cur_dir;
-$list = scandir($dir);
+$current_path = $_GET['p'] ?: '';
+$current_path_arr = explode('/', $current_path);
+$path = __DIR__ . '/' . $current_path . '/';
+$list = scandir($path);
 $dirs = [];
 $files = [];
 
 foreach ($list as $value) {
-    if ($dir . $value !== __FILE__ && !in_array($value, $block_list)) {
-        if (is_dir($dir . $value)) {
+    if ($path . $value !== __FILE__ && !in_array($value, $block_list)) {
+        if (is_dir($path . $value)) {
             $dirs[] = $value;
         } else {
             $files[] = $value;
@@ -33,7 +34,7 @@ foreach ($list as $value) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listor<?= strlen($cur_dir) ? ' - ' . $cur_dir : '' ?></title>
+    <title>Listor<?= strlen($current_path) ? ' - ' . $current_path : '' ?></title>
     <style>
         html,
         body {
@@ -48,7 +49,27 @@ foreach ($list as $value) {
             width: 50%;
             margin: 50px auto 0 auto;
             padding: 10px;
+        }
+
+        .list {
             border: 1px solid #eee;
+        }
+
+        .breadcrumb {
+            margin-bottom: 10px
+        }
+
+        .breadcrumb span {
+            margin: 0 2px;
+        }
+
+        .breadcrumb span,
+        .breadcrumb a {
+            float: left;
+        }
+
+        .breadcrumb .clear {
+            clear: both;
         }
 
         a,
@@ -88,31 +109,46 @@ foreach ($list as $value) {
             width: 15px;
             float: left;
             margin-right: 5px;
+            margin-top: -1px;
         }
     </style>
 </head>
 
 <body>
     <div class="main">
-        <ul>
-            <?php foreach ($dirs as $dir) { ?>
-                <li>
-                    <a href="./?dir=<?= rawurlencode($dir) ?>">
-                        <div class="folder"></div>
-                        <?= $dir ?>
-                    </a>
-                </li>
-            <?php } ?>
+        <div class="breadcrumb">
+            <a href="./">Home</a>
+            <?php
+            $path_till_now = '';
+            foreach ($current_path_arr as $value) {
+                $path_till_now .=  $value . '/';
+            ?>
+                <span>/</span>
+                <a href="./?p=<?= rawurlencode(rtrim($path_till_now, '/')) ?>"><?= $value ?></a>
+            <? } ?>
+            <div class="clear"></div>
+        </div>
+        <div class="list">
+            <ul>
+                <?php foreach ($dirs as $dir) { ?>
+                    <li>
+                        <a href="./?p=<?= rawurlencode(strlen($current_path) ? $current_path . '/' . $dir : $dir) ?>">
+                            <div class="folder"></div>
+                            <?= $dir ?>
+                        </a>
+                    </li>
+                <?php } ?>
 
-            <?php foreach ($files as $file) { ?>
-                <li>
-                    <a href="./<?= rawurlencode($cur_dir) . '/' . rawurlencode($file) ?>">
-                        <div class="file"></div>
-                        <?= $file ?>
-                    </a>
-                </li>
-            <?php } ?>
-        </ul>
+                <?php foreach ($files as $file) { ?>
+                    <li>
+                        <a href="./<?= rawurlencode($current_path) . '/' . rawurlencode($file) ?>">
+                            <div class="file"></div>
+                            <?= $file ?>
+                        </a>
+                    </li>
+                <?php } ?>
+            </ul>
+        </div>
     </div>
 </body>
 
