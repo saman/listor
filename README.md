@@ -1,5 +1,5 @@
 # Listor
-A simple directory listing script
+A simple directory lister script
 
 ## Usage
 Download the repository, unzip it and move the `index.php` in the web server's root folder.
